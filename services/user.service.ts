@@ -24,11 +24,10 @@ export async function loginUser(email: string, password: string): Promise<any | 
         }
         const isMatch = bcrypt.compareSync(password, user.password);
         if (isMatch) {
-            const token = jwt.sign({ _id: user._id?.toString(), email: user.email }, SECRET_KEY, {
+            const token = jwt.sign({ _id: user._id?.toString(), email: user.email, role: user.role }, SECRET_KEY, {
                 expiresIn: '2 days',
             });
-
-            return { user: { _id: user._id, email: user.email }, token: token };
+            return { user: { _id: user._id, email: user.email, role: user.role }, token: token };
         } else {
             throw new Error('Password is not correct');
         }
