@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express';
 export const loginRouter = express.Router();
+import * as userController from '../controllers/users.controller'
+import { auth } from '../middlewares/auth'
 
-loginRouter.get("/login", (req: Request, res: Response) => {
-    res.send('Login');
-});
-// loginRouter.post("/store", LicenseController.createLicense);
+loginRouter.post('/login', userController.login);
+loginRouter.post('/register', userController.register);
