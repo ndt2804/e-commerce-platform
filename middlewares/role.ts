@@ -1,14 +1,31 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt, { Secret, JwtPayload } from 'jsonwebtoken';
 
-export function checkUserRole(userRole: string) {
-    return (req: Request, res: Response, next: NextFunction) => {
-        const currentUserRole = req.user.role; // Lấy vai trò từ JWT
+export const SECRET_KEY: Secret = 'hanekodeptrainhatquadat';
 
-        if (currentUserRole === userRole) {
-            next(); // Cho phép truy cập nếu vai trò của người dùng trùng khớp
-        } else {
-            res.status(403).json({ message: 'Access denied' }); // Từ chối quyền truy cập
+export interface CustomRequest extends Request {
+    token: string | JwtPayload;
+}
+export const havePermission = (role: string) => {
+    return async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const token = req.headers.cookie?.split('=')[1];
+
+            if (!token) {
+                throw new Error();
+            }
+            const decoded = jwt.verify(token, SECRET_KEY) as JwtPayload;
+            const userRole = decoded.role;
+
+            if (userRole === role) {
+                (req as CustomRequest).token = decoded;
+                next();
+            } else {
+                res.status(403).send('Access denied');
+            }
+        } catch (err) {
+            res.status(401).send('Please authenticate');
         }
     };
-}
+};
+

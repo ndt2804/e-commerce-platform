@@ -1,6 +1,6 @@
 import User, { IUser } from '../types/user.type'
 import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 import { SECRET_KEY } from '../middlewares/auth';
 
 
@@ -33,6 +33,26 @@ export async function loginUser(email: string, password: string): Promise<any | 
         }
     } catch (error) {
         throw error;
+    }
+}
+
+export async function getUser(cookie): Promise<any | null> {
+    try {
+        const token = cookie.split('=')[1];
+        if (!token) {
+            throw new Error();
+        }
+        const decoded = jwt.verify(token, SECRET_KEY) as JwtPayload;;
+        const user = await User.findOne({ email: decoded.email });
+        if (!user) {
+            throw new Error('Not User');
+        }
+
+        return user;
+
+    }
+    catch (e) {
+        throw new Error('Error when try get User');
     }
 }
 

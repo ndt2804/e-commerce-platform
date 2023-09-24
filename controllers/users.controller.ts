@@ -12,11 +12,18 @@ export async function register(req: Request, res: Response): Promise<void> {
         res.status(500).json({ message: 'Registration failed' });
     }
 }
+export async function profile(req: Request, res: Response) {
+    try {
+        const user = await userService.getUser(req.headers.cookie);
+        res.status(200).send(user);
+    } catch (error) {
+        return res.status(500).send((error));
+    }
+}
 export async function login(req: Request, res: Response) {
     const { email, password } = req.body;
     try {
         const user = await userService.loginUser(email, password);
-        console.log(user);
         res.status(200).send(user);
     } catch (error) {
         return res.status(500).send((error));

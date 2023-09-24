@@ -3,11 +3,16 @@ import dotenv from 'dotenv';
 import route from '../api';
 import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
+import cors from 'cors';
 
 dotenv.config();
 const app: Express = express();
 const port = process.env.PORT;
 app.use(bodyParser.json());
+app.use(cors({
+    origin: 'http://localhost:3000',
+    credentials: true,
+}));
 
 async function connect() {
     try {
