@@ -4,16 +4,37 @@ import jwt, { JwtPayload } from 'jsonwebtoken';
 import { SECRET_KEY } from '../middlewares/auth';
 
 
-export async function registerUser(name: string, email: string, password: string, avatar?: string): Promise<IUser> {
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const user = new User({
-        name,
-        email,
-        password: hashedPassword,
-        avatar,
-    });
+export async function registerUser(name: string, email: string, password: string, confirmPassword: string, avatar?: string): Promise<IUser> {
+    try {
+        console.log(password);
+        console.log('password');
+        console.log(confirmPassword);
 
-    return user.save();
+        const user = await User.findOne({ email });
+        if (user) {
+            throw new Error('The Email was registered');
+        } else if (password !== confirmPassword) {
+            throw new Error('Password and confirmPassword do not match');
+        } else {
+            const hashedPassword = await bcrypt.hash(password, 10);
+            const newUser = new User({
+                name,
+                email,
+                password: hashedPassword,
+                avatar,
+            });
+
+            return newUser.save();
+        }
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function logoutUser() {
+    // Thực hiện logic đăng xuất ở đây (nếu cần)
+    // Sau khi đăng xuất, không cần trả về gì từ services
+    // Controllers sẽ xử lý việc trả về response OK
 }
 
 export async function loginUser(email: string, password: string): Promise<any | null> {

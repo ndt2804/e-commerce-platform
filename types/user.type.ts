@@ -15,7 +15,7 @@ const userSchema: Schema = new Schema({
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     role: { type: String, default: 'user' },
-    avatar: { type: String },
+    avatar: { type: String, default: 'null' },
     created_at: { type: Date, default: Date.now },
 });
 
