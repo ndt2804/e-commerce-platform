@@ -6,10 +6,6 @@ import { SECRET_KEY } from '../middlewares/auth';
 
 export async function registerUser(name: string, email: string, password: string, confirmPassword: string, avatar?: string): Promise<IUser> {
     try {
-        console.log(password);
-        console.log('password');
-        console.log(confirmPassword);
-
         const user = await User.findOne({ email });
         if (user) {
             throw new Error('The Email was registered');
