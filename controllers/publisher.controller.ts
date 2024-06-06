@@ -18,6 +18,6 @@ export async function getPublisher(req: Request, res: Response): Promise<void> {
         res.status(201).json(product);
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'Add New Publisher failed' });
+        res.status(500).json({ message: 'Get Publisher failed' });
     }
 }
